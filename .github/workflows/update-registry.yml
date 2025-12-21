@@ -1,0 +1,130 @@
+name: Update Game Registry
+
+on:
+  workflow_call:
+    inputs:
+      game-name:
+        required: true
+        type: string
+        description: "The display name of the game"
+      subdomain:
+        required: true
+        type: string
+        description: "The subdomain under crap.games (e.g., 'fuel' for fuel.crap.games)"
+      description:
+        required: true
+        type: string
+        description: "A short description of the game"
+      category:
+        required: true
+        type: string
+        description: "Game category (e.g., puzzle, action, strategy, simulation)"
+      tags:
+        required: false
+        type: string
+        default: ""
+        description: "Comma-separated tags for the game"
+      thumbnail-url:
+        required: false
+        type: string
+        default: ""
+        description: "URL to game thumbnail/icon image"
+      author:
+        required: false
+        type: string
+        default: ""
+        description: "Game author/creator name"
+      repo-url:
+        required: false
+        type: string
+        default: ""
+        description: "URL to the game's repository"
+      version:
+        required: false
+        type: string
+        default: ""
+        description: "Game version number"
+
+jobs:
+  update-registry:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout registry repo
+        uses: actions/checkout@v4
+        with:
+          repository: mcfredrick/crap_games
+          token: ${{ secrets.REGISTRY_UPDATE_TOKEN }}
+
+      - name: Update registry.json
+        run: |
+          python3 << 'EOF'
+          import json
+          import os
+          from datetime import datetime
+          
+          registry_path = "games/registry.json"
+          
+          # Load existing registry
+          with open(registry_path, 'r') as f:
+              registry = json.load(f)
+          
+          # Create new game entry
+          new_game = {
+              "name": "${{ inputs.game-name }}",
+              "subdomain": "${{ inputs.subdomain }}",
+              "url": "https://${{ inputs.subdomain }}.crap.games",
+              "description": "${{ inputs.description }}",
+              "category": "${{ inputs.category }}",
+              "tags": [tag.strip() for tag in "${{ inputs.tags }}".split(",") if tag.strip()],
+              "author": "${{ inputs.author }}",
+              "version": "${{ inputs.version }}",
+              "thumbnailUrl": "${{ inputs.thumbnail-url }}",
+              "repoUrl": "${{ inputs.repo-url }}",
+              "registeredAt": datetime.utcnow().isoformat() + "Z",
+              "updatedAt": datetime.utcnow().isoformat() + "Z",
+              "registeredBy": "mcfredrick",
+              "lastCommit": os.environ.get("GITHUB_SHA", "")
+          }
+          
+          # Remove empty fields
+          new_game = {k: v for k, v in new_game.items() if v and v != []}
+          
+          # Check if game already exists
+          game_index = None
+          for i, game in enumerate(registry["games"]):
+              if game["subdomain"] == "${{ inputs.subdomain }}":
+                  game_index = i
+                  break
+          
+          if game_index is not None:
+              # Update existing game
+              registry["games"][game_index].update(new_game)
+          else:
+              # Add new game
+              registry["games"].append(new_game)
+          
+          # Update metadata
+          registry["metadata"]["lastUpdated"] = datetime.utcnow().isoformat() + "Z"
+          
+          # Write back to file
+          with open(registry_path, 'w') as f:
+              json.dump(registry, f, indent=2)
+          
+          print("✓ Registry updated successfully")
+          EOF
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          if git diff --quiet games/registry.json; then
+            echo "No changes to commit"
+          else
+            git add games/registry.json
+            git commit -m "chore: update registry for ${{ inputs.game-name }}"
+            git push
+            echo "✓ Changes pushed successfully"
+          fi
