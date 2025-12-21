@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crap.games</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .game-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .game-thumbnail {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .game-info {
+            padding: 1rem;
+        }
+        .game-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        .game-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .game-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #999;
+        }
+        .game-category {
+            background: #f0f0f0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        .game-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+        .game-tag {
+            background: #e8f4fd;
+            color: #0066cc;
+            padding: 0.125rem 0.375rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+        }
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            padding: 2rem;
+            background: #fde8e8;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        .stats {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #666;
+        }
+        .filter-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .filter-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-button:hover {
+            background: #f0f0f0;
+        }
+        .filter-button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <h1>crap.games</h1>
+    <div id="stats" class="stats"></div>
+    <div id="filter-controls" class="filter-controls"></div>
+    <div id="games-container" class="games-container">
+        <div class="loading">Loading games...</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('games-container');
+            const statsDiv = document.getElementById('stats');
+            const filterDiv = document.getElementById('filter-controls');
+            
+            let allGames = [];
+            let currentFilter = 'all';
+            
+            try {
+                // Fetch the game registry
+                const response = await fetch('./games/registry.json');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load game registry');
+                }
+                
+                const registry = await response.json();
+                allGames = registry.games || [];
+                
+                // Update stats
+                const lastUpdated = registry.metadata?.lastUpdated 
+                    ? new Date(registry.metadata.lastUpdated).toLocaleDateString()
+                    : 'Unknown';
+                statsDiv.innerHTML = `
+                    <strong>${allGames.length}</strong> games available • 
+                    Last updated: ${lastUpdated}
+                `;
+                
+                // Create filter buttons
+                const categories = [...new Set(allGames.map(game => game.category || 'uncategorized'))];
+                filterDiv.innerHTML = `
+                    <button class="filter-button active" data-filter="all">All Games</button>
+                    ${categories.map(cat => `
+                        <button class="filter-button" data-filter="${cat}">${cat.charAt(0).toUpperCase() + cat.slice(1)}</button>
+                    `).join('')}
+                `;
+                
+                // Add filter event listeners
+                filterDiv.querySelectorAll('.filter-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        filterDiv.querySelectorAll('.filter-button').forEach(b => b.classList.remove('active'));
+                        button.classList.add('active');
+                        currentFilter = button.dataset.filter;
+                        displayGames();
+                    });
+                });
+                
+                // Display games
+                displayGames();
+                
+            } catch (error) {
+                console.error('Error loading game registry:', error);
+                container.innerHTML = `
+                    <div class="error">
+                        Failed to load games. Please try again later.
+                        <div style="margin-top: 1rem; font-size: 0.9em; color: #666;">
+                            ${error.message}
+                        </div>
+                    </div>
+                `;
+                statsDiv.innerHTML = 'Unable to load game registry';
+            }
+            
+            function displayGames() {
+                const filteredGames = currentFilter === 'all' 
+                    ? allGames 
+                    : allGames.filter(game => (game.category || 'uncategorized') === currentFilter);
+                
+                if (filteredGames.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #666;">
+                            ${currentFilter === 'all' 
+                                ? 'No games registered yet. Check back soon!' 
+                                : `No games in the "${currentFilter}" category.`}
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = filteredGames.map(game => `
+                    <a href="${game.url}" class="game-card" target="_blank" rel="noopener noreferrer">
+                        ${game.thumbnailUrl 
+                            ? `<img src="${game.thumbnailUrl}" alt="${game.name}" class="game-thumbnail" onerror="this.style.display='none'">`
+                            : `<div class="game-thumbnail"></div>`
+                        }
+                        <div class="game-info">
+                            <div class="game-name">${game.name}</div>
+                            ${game.description ? `<div class="game-description">${game.description}</div>` : ''}
+                            <div class="game-meta">
+                                <span class="game-category">${(game.category || 'uncategorized').charAt(0).toUpperCase() + (game.category || 'uncategorized').slice(1)}</span>
+                                <span>${game.author || 'Anonymous'}</span>
+                            </div>
+                            ${game.tags && game.tags.length > 0 ? `
+                                <div class="game-tags">
+                                    ${game.tags.slice(0, 3).map(tag => `<span class="game-tag">${tag}</span>`).join('')}
+                                    ${game.tags.length > 3 ? `<span class="game-tag">+${game.tags.length - 3}</span>` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </a>
+                `).join('');
+            }
+        });
+    </script>
+</body>
+</html>

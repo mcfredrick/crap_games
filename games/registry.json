@@ -1,0 +1,24 @@
+{
+  "games": [
+    {
+      "name": "Fuel",
+      "subdomain": "fuel",
+      "url": "https://fuel.crap.games",
+      "description": "A game about managing and optimizing fuel resources",
+      "category": "simulation",
+      "tags": ["strategy", "resource-management"],
+      "author": "Matt",
+      "version": "1.0.0",
+      "thumbnailUrl": "https://fuel.crap.games/icon.png",
+      "repoUrl": "https://github.com/your-username/fuel-game",
+      "registeredAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+      "updatedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+      "registeredBy": "matt",
+      "lastCommit": "$(git rev-parse HEAD 2>/dev/null || echo '')"
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  }
+}
