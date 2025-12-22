@@ -30,18 +30,18 @@
         "test",
         "godot"
       ],
-      "author": "yourusername",
+      "author": "ttam",
       "version": "0.1.0",
-      "thumbnailUrl": "https://test-game.crap.games/assets/icon.png",
-      "repoUrl": "https://github.com/yourusername/test-game",
-      "registeredAt": "2025-12-22T02:08:57.991011Z",
-      "updatedAt": "2025-12-22T02:08:57.991040Z",
+      "thumbnailUrl": "https://test.crap.games/assets/icon.png",
+      "repoUrl": "https://github.com/mcfredrick/test-game",
+      "registeredAt": "2025-12-22T02:45:14.516044Z",
+      "updatedAt": "2025-12-22T02:45:14.516067Z",
       "registeredBy": "mcfredrick",
-      "lastCommit": "4932699b4fb047e5c809ce0f1d88f938543e8c37"
+      "lastCommit": "ecd357e672a743cad23d7a8789b2d5431fd98881"
     }
   ],
   "metadata": {
     "version": "1.0.0",
-    "lastUpdated": "2025-12-22T02:08:57.991067Z"
+    "lastUpdated": "2025-12-22T02:45:14.516100Z"
   }
 }
