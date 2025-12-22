@@ -1,0 +1,151 @@
+name: Deploy Godot Web Build
+
+on:
+  workflow_call:
+    inputs:
+      project_dir:
+        description: "Path to Godot project directory (relative to repo root)"
+        required: false
+        type: string
+        default: "godot_web_game"
+      export_preset:
+        description: "Name of the export preset in export_presets.cfg"
+        required: false
+        type: string
+        default: "Web"
+      godot_version:
+        description: "Godot engine version to use (e.g., 4.5.1)"
+        required: false
+        type: string
+        default: "4.5.1"
+      build_dir:
+        description: "Output directory for web build (relative to repo root)"
+        required: false
+        type: string
+        default: "godot_web_game/build/web"
+      cache_ttl_days:
+        description: "Cache TTL in days for Godot downloads"
+        required: false
+        type: number
+        default: 30
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: ${{ inputs.godot_version }}
+  GODOT_HEADLESS_URL: "https://downloads.godotengine.org/?version=${{ inputs.godot_version }}&flavor=stable&slug=linux.x86_64.zip&platform=linux.64"
+  GODOT_TEMPLATES_URL: "https://downloads.godotengine.org/?version=${{ inputs.godot_version }}&flavor=stable&slug=export_templates.tpz&platform=templates"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/godot/cache
+          key: godot-${{ env.GODOT_VERSION }}
+          restore-keys: |
+            godot-
+
+      - name: Install Godot Headless + export templates
+        run: |
+          set -xeuo pipefail
+          GODOT_ROOT="${{ runner.temp }}/godot"
+          GODOT_CACHE="${GODOT_ROOT}/cache"
+          mkdir -p "${GODOT_CACHE}" "${GODOT_ROOT}"
+          mkdir -p "$(dirname "${GODOT_BIN}")"
+          ARCHIVE_NAME="Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          EXTRACTED_NAME="Godot_v${GODOT_VERSION}-stable_linux.x86_64"
+          HEADLESS_ARCHIVE="${GODOT_CACHE}/${ARCHIVE_NAME}"
+
+          if [ ! -f "$HEADLESS_ARCHIVE" ]; then
+            curl -L "${GODOT_HEADLESS_URL}" -o "$HEADLESS_ARCHIVE"
+          fi
+
+          unzip -qo "$HEADLESS_ARCHIVE" -d "${GODOT_ROOT}"
+          mv "${GODOT_ROOT}/${EXTRACTED_NAME}" "${GODOT_BIN}"
+          chmod +x "${GODOT_BIN}"
+        env:
+          GODOT_BIN: "${{ runner.temp }}/godot/godot"
+
+      - name: Install export templates
+        run: |
+          set -xeuo pipefail
+          GODOT_VERSION="${{ env.GODOT_VERSION }}"
+          GODOT_TEMPLATES_URL="${{ env.GODOT_TEMPLATES_URL }}"
+          
+          if [[ "$(uname)" == "Darwin" ]]; then
+            EXPORT_ROOT="${HOME}/Library/Application Support/Godot/export_templates"
+          else
+            EXPORT_ROOT="${HOME}/.local/share/godot/export_templates"
+          fi
+          
+          TARGET_DIR="${EXPORT_ROOT}/${GODOT_VERSION}.stable"
+          
+          if [[ -d "${TARGET_DIR}" ]]; then
+            echo "Godot export templates already present in ${TARGET_DIR}"
+            exit 0
+          fi
+          
+          TMP_DIR="$(mktemp -d)"
+          trap "rm -rf '${TMP_DIR}'" EXIT
+          ARCHIVE="${TMP_DIR}/templates.tpz"
+          
+          echo "Downloading export templates for Godot ${GODOT_VERSION}..."
+          curl -L "${GODOT_TEMPLATES_URL}" -o "${ARCHIVE}"
+          
+          echo "Extracting templates..."
+          unzip -qo "${ARCHIVE}" -d "${TMP_DIR}/unzipped"
+          
+          if [[ ! -d "${TMP_DIR}/unzipped/templates" ]]; then
+            echo "Error: Downloaded archive does not contain a templates directory." >&2
+            exit 1
+          fi
+          
+          echo "Installing templates into ${TARGET_DIR}"
+          mkdir -p "${TARGET_DIR}"
+          cp -R "${TMP_DIR}/unzipped/templates/." "${TARGET_DIR}/"
+          echo "Templates installed successfully."
+
+      - name: Export web build
+        run: |
+          set -xeuo pipefail
+          PROJECT_DIR="${{ inputs.project_dir }}"
+          BUILD_DIR="${{ inputs.build_dir }}"
+          EXPORT_PRESET="${{ inputs.export_preset }}"
+          GODOT_BIN="${{ runner.temp }}/godot/godot"
+          
+          echo "Cleaning ${BUILD_DIR}"
+          rm -rf "${BUILD_DIR}"
+          mkdir -p "${BUILD_DIR}"
+          
+          echo "Exporting preset \"${EXPORT_PRESET}\" from ${PROJECT_DIR}"
+          "${GODOT_BIN}" --headless --path "${PROJECT_DIR}" --export-release "${EXPORT_PRESET}" "${BUILD_DIR}/index.html"
+          
+          echo "Web build complete → ${BUILD_DIR}"
+
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ inputs.build_dir }}
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
