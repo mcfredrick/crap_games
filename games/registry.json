@@ -38,10 +38,30 @@
       "updatedAt": "2025-12-22T14:21:07.291774Z",
       "registeredBy": "mcfredrick",
       "lastCommit": "2b983b33f4853864d915de0ec80e726df806b4d8"
+    },
+    {
+      "name": "Snail Simulator",
+      "subdomain": "snailsim",
+      "url": "https://snailsim.crap.games",
+      "description": "Snails are the artists of the mollusk world.",
+      "category": "simulation",
+      "tags": [
+        "snail",
+        "art",
+        "paint"
+      ],
+      "author": "ttam",
+      "version": "0.1.0",
+      "thumbnailUrl": "https://snailsim.crap.games/assets/icon.png",
+      "repoUrl": "https://github.com/mcfredrick/snailsim",
+      "registeredAt": "2025-12-22T14:44:42.940757Z",
+      "updatedAt": "2025-12-22T14:44:42.940778Z",
+      "registeredBy": "mcfredrick",
+      "lastCommit": "69d482b53c965d4e7bc91e6f3cbb8265b1a41d69"
     }
   ],
   "metadata": {
     "version": "1.0.0",
-    "lastUpdated": "2025-12-22T14:21:07.291805Z"
+    "lastUpdated": "2025-12-22T14:44:42.940811Z"
   }
 }
