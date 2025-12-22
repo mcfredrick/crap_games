@@ -34,14 +34,14 @@
       "version": "0.1.0",
       "thumbnailUrl": "https://test.crap.games/assets/icon.png",
       "repoUrl": "https://github.com/mcfredrick/test-game",
-      "registeredAt": "2025-12-22T02:58:52.668807Z",
-      "updatedAt": "2025-12-22T02:58:52.668831Z",
+      "registeredAt": "2025-12-22T03:15:40.329617Z",
+      "updatedAt": "2025-12-22T03:15:40.329641Z",
       "registeredBy": "mcfredrick",
-      "lastCommit": "814a58ecf77a9892c0e00c6a87061eaee0f610da"
+      "lastCommit": "c3dbb16d1001372038c44ad1d70ea176e36bf43e"
     }
   ],
   "metadata": {
     "version": "1.0.0",
-    "lastUpdated": "2025-12-22T02:58:52.668854Z"
+    "lastUpdated": "2025-12-22T03:15:40.329665Z"
   }
 }
