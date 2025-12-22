@@ -38,10 +38,29 @@
       "updatedAt": "2025-12-22T02:04:55.840729Z",
       "registeredBy": "mcfredrick",
       "lastCommit": "af479905ec1b3f79fc69e3630634c8109ce4e54b"
+    },
+    {
+      "name": "Test Game",
+      "subdomain": "test",
+      "url": "https://test.crap.games",
+      "description": "A test game",
+      "category": "game",
+      "tags": [
+        "test",
+        "godot"
+      ],
+      "author": "yourusername",
+      "version": "0.1.0",
+      "thumbnailUrl": "https://test-game.crap.games/assets/icon.png",
+      "repoUrl": "https://github.com/yourusername/test-game",
+      "registeredAt": "2025-12-22T02:08:57.991011Z",
+      "updatedAt": "2025-12-22T02:08:57.991040Z",
+      "registeredBy": "mcfredrick",
+      "lastCommit": "4932699b4fb047e5c809ce0f1d88f938543e8c37"
     }
   ],
   "metadata": {
     "version": "1.0.0",
-    "lastUpdated": "2025-12-22T02:04:55.840757Z"
+    "lastUpdated": "2025-12-22T02:08:57.991067Z"
   }
 }
