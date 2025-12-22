@@ -21,26 +21,27 @@
       "lastCommit": "4858f9d087ba2b8e77ebd491c206997bdda66e15"
     },
     {
-      "name": "template-test",
+      "name": "tets",
       "subdomain": "test",
       "url": "https://test.crap.games",
       "description": "Template for Godot web games on Crap.Games - dude",
       "category": "action",
       "tags": [
+        "godot",
         "footballs"
       ],
       "author": "mcfredrick",
       "version": "0.1.0",
       "thumbnailUrl": "https://test.crap.games/assets/icon.png",
       "repoUrl": "https://github.com/mcfredrick/test-game",
-      "registeredAt": "2025-12-22T14:15:09.465199Z",
-      "updatedAt": "2025-12-22T14:15:09.465229Z",
+      "registeredAt": "2025-12-22T14:21:07.291743Z",
+      "updatedAt": "2025-12-22T14:21:07.291774Z",
       "registeredBy": "mcfredrick",
-      "lastCommit": "3422d2c129a48d8cc2959da60643ec00a5775ee3"
+      "lastCommit": "2b983b33f4853864d915de0ec80e726df806b4d8"
     }
   ],
   "metadata": {
     "version": "1.0.0",
-    "lastUpdated": "2025-12-22T14:15:09.465259Z"
+    "lastUpdated": "2025-12-22T14:21:07.291805Z"
   }
 }
