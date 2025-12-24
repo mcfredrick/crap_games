@@ -21,25 +21,6 @@
       "lastCommit": "4858f9d087ba2b8e77ebd491c206997bdda66e15"
     },
     {
-      "name": "tets",
-      "subdomain": "test",
-      "url": "https://test.crap.games",
-      "description": "Template for Godot web games on Crap.Games - dude",
-      "category": "action",
-      "tags": [
-        "godot",
-        "footballs"
-      ],
-      "author": "mcfredrick",
-      "version": "0.1.0",
-      "thumbnailUrl": "https://test.crap.games/assets/icon.png",
-      "repoUrl": "https://github.com/mcfredrick/test-game",
-      "registeredAt": "2025-12-22T14:21:07.291743Z",
-      "updatedAt": "2025-12-22T14:21:07.291774Z",
-      "registeredBy": "mcfredrick",
-      "lastCommit": "2b983b33f4853864d915de0ec80e726df806b4d8"
-    },
-    {
       "name": "Snail Simulator",
       "subdomain": "snailsim",
       "url": "https://snailsim.crap.games",
