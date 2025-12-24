@@ -3,140 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>crap.games</title>
+    <title>✨ crap.games - The ULTIMATE Game Portal! ✨</title>
     <style>
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            max-width: 1200px;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive;
+            background: #000080;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.05) 35px, rgba(255,255,255,.05) 70px),
+                radial-gradient(circle at 20% 50%, #000080 0%, #0000CD 100%);
+            margin: 0;
+            padding: 0;
+            color: #FFFF00;
+            overflow-x: hidden;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 75%, white, transparent);
+            background-size: 200% 200%;
+            animation: stars 3s ease-in-out infinite;
+            opacity: 0.5;
+        }
+        
+        @keyframes stars {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+        
+        .container {
+            max-width: 900px;
             margin: 0 auto;
-            padding: 2rem;
-            line-height: 1.6;
-            color: #333;
+            padding: 1rem;
+            position: relative;
+            z-index: 1;
         }
-        h1 {
-            color: #2c3e50;
+        
+        .header {
             text-align: center;
+            padding: 2rem 1rem;
+            background: linear-gradient(45deg, #FF00FF, #00FFFF, #FFFF00, #FF00FF);
+            background-size: 300% 300%;
+            animation: rainbow 3s ease infinite;
+            border: 5px ridge #FFD700;
             margin-bottom: 2rem;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
         }
+        
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 
+                3px 3px 0 #FF00FF,
+                6px 6px 0 #00FFFF,
+                9px 9px 0 #FFFF00;
+            color: #FFFFFF;
+            animation: float 2s ease-in-out infinite;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #00FF00;
+            margin-top: 1rem;
+            animation: blink 1s infinite;
+            font-weight: bold;
+        }
+        
+        .marquee-container {
+            background: #FF00FF;
+            border: 3px solid #FFFF00;
+            padding: 0.5rem 0;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .marquee {
+            color: #FFFFFF;
+            font-weight: bold;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            animation: marquee 15s linear infinite;
+        }
+        
+        .stats {
+            text-align: center;
+            background: #000000;
+            border: 3px dashed #00FF00;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #00FF00;
+            font-weight: bold;
+        }
+        
+        .filter-controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-button {
+            padding: 0.5rem 1rem;
+            border: 3px outset #C0C0C0;
+            background: linear-gradient(180deg, #FFFFFF 0%, #C0C0C0 100%);
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive;
+            font-weight: bold;
+            color: #000000;
+            transition: all 0.1s;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+        }
+        
+        .filter-button:hover {
+            background: linear-gradient(180deg, #FFFF00 0%, #FFD700 100%);
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+        }
+        
+        .filter-button:active {
+            border-style: inset;
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+        }
+        
+        .filter-button.active {
+            background: linear-gradient(180deg, #00FF00 0%, #008000 100%);
+            color: #FFFFFF;
+            border-style: inset;
+        }
+        
         .games-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
         }
+        
         .game-card {
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: linear-gradient(135deg, #FF00FF 0%, #00FFFF 100%);
+            border: 4px ridge #FFD700;
+            padding: 3px;
             text-decoration: none;
             color: inherit;
+            transition: transform 0.2s;
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
         }
+        
         .game-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: scale(1.05) rotate(-1deg);
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.7);
         }
+        
+        .game-inner {
+            background: #FFFFFF;
+            padding: 0;
+        }
+        
         .game-thumbnail {
             width: 100%;
-            height: 150px;
+            height: 120px;
             object-fit: cover;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-bottom: 3px solid #000000;
         }
+        
         .game-info {
-            padding: 1rem;
+            padding: 0.75rem;
+            background: #FFFFFF;
         }
+        
         .game-name {
-            font-size: 1.25rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #0000FF;
+            text-decoration: underline;
             margin-bottom: 0.5rem;
-            color: #2c3e50;
         }
+        
         .game-description {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 0.75rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .game-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             font-size: 0.8rem;
-            color: #999;
+            color: #000000;
+            margin-bottom: 0.5rem;
         }
+        
+        .game-meta {
+            font-size: 0.75rem;
+            color: #666666;
+            margin-bottom: 0.5rem;
+        }
+        
         .game-category {
-            background: #f0f0f0;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-weight: 500;
+            background: #FFFF00;
+            color: #000000;
+            padding: 0.125rem 0.375rem;
+            border: 2px solid #000000;
+            font-weight: bold;
+            display: inline-block;
         }
+        
         .game-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.25rem;
             margin-top: 0.5rem;
         }
+        
         .game-tag {
-            background: #e8f4fd;
-            color: #0066cc;
+            background: #00FF00;
+            color: #000000;
             padding: 0.125rem 0.375rem;
-            border-radius: 8px;
-            font-size: 0.75rem;
+            border: 1px solid #000000;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
+        
         .loading {
             text-align: center;
             padding: 4rem 2rem;
-            color: #666;
+            color: #FFFF00;
+            font-size: 1.5rem;
+            animation: blink 1s infinite;
         }
+        
         .error {
-            color: #e74c3c;
+            color: #FF0000;
             text-align: center;
             padding: 2rem;
-            background: #fde8e8;
-            border-radius: 8px;
+            background: #FFFF00;
+            border: 5px solid #FF0000;
             margin: 2rem 0;
+            font-weight: bold;
         }
-        .stats {
+        
+        .footer {
             text-align: center;
-            margin-bottom: 2rem;
-            color: #666;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: #000000;
+            border: 3px solid #FFFF00;
+            color: #00FF00;
         }
-        .filter-controls {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        .filter-button {
+        
+        .visitor-counter {
+            background: #000000;
+            border: 2px inset #808080;
             padding: 0.5rem 1rem;
-            border: 1px solid #ddd;
-            background: #fff;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .filter-button:hover {
-            background: #f0f0f0;
-        }
-        .filter-button.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
+            display: inline-block;
+            color: #00FF00;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            margin-top: 1rem;
         }
     </style>
 </head>
 <body>
-    <h1>crap.games</h1>
-    <div id="stats" class="stats"></div>
-    <div id="filter-controls" class="filter-controls"></div>
-    <div id="games-container" class="games-container">
-        <div class="loading">Loading games...</div>
+    <div class="stars"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🎮 crap.games 🎮</h1>
+            <div class="subtitle">⭐ THE ULTIMATE GAME PORTAL ⭐</div>
+        </div>
+        
+        <div class="marquee-container">
+            <div class="marquee">
+                ★★★ WELCOME TO THE COOLEST GAME SITE ON THE INTERNET!!! ★★★ 
+                CHECK OUT OUR AWESOME COLLECTION!!! ★★★ 
+                BOOKMARK THIS PAGE!!! ★★★ 
+                TELL YOUR FRIENDS!!! ★★★
+            </div>
+        </div>
+        
+        <div id="stats" class="stats">Loading stats...</div>
+        
+        <div id="filter-controls" class="filter-controls"></div>
+        
+        <div id="games-container" class="games-container">
+            <div class="loading">★ LOADING GAMES... ★</div>
+        </div>
+        
+        <div class="footer">
+            <div>🌟 Best viewed in Netscape Navigator 4.0 or higher! 🌟</div>
+            <div style="margin-top: 1rem;">Made with ❤️ and HTML</div>
+            <div class="visitor-counter">
+                👾 YOU ARE VISITOR #<span id="visitor-count">001337</span> 👾
+            </div>
+        </div>
     </div>
 
     <script>
@@ -149,7 +334,6 @@
             let currentFilter = 'all';
             
             try {
-                // Fetch the game registry
                 const response = await fetch('./games/registry.json');
                 
                 if (!response.ok) {
@@ -159,25 +343,22 @@
                 const registry = await response.json();
                 allGames = registry.games || [];
                 
-                // Update stats
                 const lastUpdated = registry.metadata?.lastUpdated 
                     ? new Date(registry.metadata.lastUpdated).toLocaleDateString()
                     : 'Unknown';
                 statsDiv.innerHTML = `
-                    <strong>${allGames.length}</strong> games available • 
+                    🎯 <strong>${allGames.length}</strong> CRAP GAMES AVAILABLE! 🎯<br>
                     Last updated: ${lastUpdated}
                 `;
                 
-                // Create filter buttons
                 const categories = [...new Set(allGames.map(game => game.category || 'uncategorized'))];
                 filterDiv.innerHTML = `
-                    <button class="filter-button active" data-filter="all">All Games</button>
+                    <button class="filter-button active" data-filter="all">★ ALL GAMES ★</button>
                     ${categories.map(cat => `
-                        <button class="filter-button" data-filter="${cat}">${cat.charAt(0).toUpperCase() + cat.slice(1)}</button>
+                        <button class="filter-button" data-filter="${cat}">${cat.toUpperCase()}</button>
                     `).join('')}
                 `;
                 
-                // Add filter event listeners
                 filterDiv.querySelectorAll('.filter-button').forEach(button => {
                     button.addEventListener('click', () => {
                         filterDiv.querySelectorAll('.filter-button').forEach(b => b.classList.remove('active'));
@@ -187,20 +368,19 @@
                     });
                 });
                 
-                // Display games
                 displayGames();
                 
             } catch (error) {
                 console.error('Error loading game registry:', error);
                 container.innerHTML = `
                     <div class="error">
-                        Failed to load games. Please try again later.
-                        <div style="margin-top: 1rem; font-size: 0.9em; color: #666;">
+                        ⚠️ ERROR! COULD NOT LOAD GAMES! ⚠️
+                        <div style="margin-top: 1rem;">
                             ${error.message}
                         </div>
                     </div>
                 `;
-                statsDiv.innerHTML = 'Unable to load game registry';
+                statsDiv.innerHTML = '❌ Unable to load game registry ❌';
             }
             
             function displayGames() {
@@ -210,10 +390,10 @@
                 
                 if (filteredGames.length === 0) {
                     container.innerHTML = `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #666;">
+                        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #FFFF00; font-size: 1.5rem;">
                             ${currentFilter === 'all' 
-                                ? 'No games registered yet. Check back soon!' 
-                                : `No games in the "${currentFilter}" category.`}
+                                ? '🎮 NO GAMES YET! CHECK BACK SOON! 🎮' 
+                                : `🎮 NO GAMES IN "${currentFilter.toUpperCase()}" CATEGORY! 🎮`}
                         </div>
                     `;
                     return;
@@ -221,27 +401,36 @@
                 
                 container.innerHTML = filteredGames.map(game => `
                     <a href="${game.url}" class="game-card" target="_blank" rel="noopener noreferrer">
-                        ${game.thumbnailUrl 
-                            ? `<img src="${game.thumbnailUrl}" alt="${game.name}" class="game-thumbnail" onerror="this.style.display='none'">`
-                            : `<div class="game-thumbnail"></div>`
-                        }
-                        <div class="game-info">
-                            <div class="game-name">${game.name}</div>
-                            ${game.description ? `<div class="game-description">${game.description}</div>` : ''}
-                            <div class="game-meta">
-                                <span class="game-category">${(game.category || 'uncategorized').charAt(0).toUpperCase() + (game.category || 'uncategorized').slice(1)}</span>
-                                <span>${game.author || 'Anonymous'}</span>
-                            </div>
-                            ${game.tags && game.tags.length > 0 ? `
-                                <div class="game-tags">
-                                    ${game.tags.slice(0, 3).map(tag => `<span class="game-tag">${tag}</span>`).join('')}
-                                    ${game.tags.length > 3 ? `<span class="game-tag">+${game.tags.length - 3}</span>` : ''}
+                        <div class="game-inner">
+                            ${game.thumbnailUrl 
+                                ? `<img src="${game.thumbnailUrl}" alt="${game.name}" class="game-thumbnail" onerror="this.style.display='none'">`
+                                : `<div class="game-thumbnail"></div>`
+                            }
+                            <div class="game-info">
+                                <div class="game-name">${game.name}</div>
+                                ${game.description ? `<div class="game-description">${game.description}</div>` : ''}
+                                <div class="game-meta">
+                                    <span class="game-category">${(game.category || 'uncategorized').toUpperCase()}</span>
+                                    <div>By: ${game.author || 'Anonymous'}</div>
                                 </div>
-                            ` : ''}
+                                ${game.tags && game.tags.length > 0 ? `
+                                    <div class="game-tags">
+                                        ${game.tags.slice(0, 3).map(tag => `<span class="game-tag">${tag}</span>`).join('')}
+                                        ${game.tags.length > 3 ? `<span class="game-tag">+${game.tags.length - 3}</span>` : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
                         </div>
                     </a>
                 `).join('');
             }
+            
+            // Fake visitor counter animation
+            let count = 1337;
+            setInterval(() => {
+                count += Math.floor(Math.random() * 3);
+                document.getElementById('visitor-count').textContent = String(count).padStart(6, '0');
+            }, 5000);
         });
     </script>
 </body>
