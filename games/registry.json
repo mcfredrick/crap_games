@@ -15,10 +15,10 @@
       "version": "1.0.0",
       "thumbnailUrl": "https://fuel.crap.games/assets/icon.png",
       "repoUrl": "https://github.com/mcfredrick/fuel",
-      "registeredAt": "2025-12-25T01:30:48.373235Z",
-      "updatedAt": "2025-12-25T01:30:48.373266Z",
+      "registeredAt": "2025-12-25T01:45:49.890097Z",
+      "updatedAt": "2025-12-25T01:45:49.890126Z",
       "registeredBy": "mcfredrick",
-      "lastCommit": "ddb50ef16a19bea2fa9d196efa36794d0484e831"
+      "lastCommit": "f50dd08cd210a0f3cfdd2c254663e8b0ebb7f37b"
     },
     {
       "name": "Snail Simulator",
@@ -43,6 +43,6 @@
   ],
   "metadata": {
     "version": "1.0.0",
-    "lastUpdated": "2025-12-25T01:44:46.058408Z"
+    "lastUpdated": "2025-12-25T01:45:49.890157Z"
   }
 }
