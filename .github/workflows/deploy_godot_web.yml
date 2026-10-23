@@ -23,6 +23,11 @@ on:
         required: false
         type: string
         default: "godot_web_game/build/web"
+      test_command:
+        description: "Optional command run from the repo root after Godot is installed (as `godot` on PATH) and before export; a failure stops the deploy"
+        required: false
+        type: string
+        default: ""
       cache_ttl_days:
         description: "Cache TTL in days for Godot downloads"
         required: false
@@ -116,6 +121,15 @@ jobs:
           mkdir -p "${TARGET_DIR}"
           cp -R "${TMP_DIR}/unzipped/templates/." "${TARGET_DIR}/"
           echo "Templates installed successfully."
+
+      - name: Run tests
+        if: ${{ inputs.test_command != '' }}
+        run: |
+          set -euo pipefail
+          mkdir -p "${{ runner.temp }}/bin"
+          ln -sf "${{ runner.temp }}/godot/godot" "${{ runner.temp }}/bin/godot"
+          export PATH="${{ runner.temp }}/bin:${PATH}"
+          ${{ inputs.test_command }}
 
       - name: Export web build
         run: |
