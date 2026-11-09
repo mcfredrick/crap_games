@@ -169,3 +169,23 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # On plain http, Safari has no AudioWorklet, so Godot fails to start and the page stays
+      # blank on iPhones. Browsers also keep separate storage for http and https, which splits
+      # saves. GITHUB_TOKEN can't change this setting, so the check fails the run instead.
+      - name: Check HTTPS is enforced on the custom domain
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          site="$(gh api "repos/${GITHUB_REPOSITORY}/pages")"
+          cname="$(jq -r '.cname // empty' <<<"$site")"
+          if [[ -z "$cname" || "$(jq -r '.https_enforced' <<<"$site")" == "true" ]]; then
+            exit 0
+          fi
+          enable="gh api -X PUT repos/${GITHUB_REPOSITORY}/pages -F https_enforced=true"
+          if [[ "$(jq -r '.https_certificate.state // empty' <<<"$site")" == "approved" ]]; then
+            echo "::error::HTTPS is not enforced on ${cname}. Run: ${enable}"
+            exit 1
+          fi
+          echo "::warning::The certificate for ${cname} is not issued yet. Once it is, run: ${enable}"
